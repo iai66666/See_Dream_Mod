@@ -1,2 +1,7 @@
-# See_Dream_Mod
-a minecraft mod from 1.12.2forge
+## 梦现
+
+一个只有在视野范围内才稳定的世界。（虽然目前为止相关功能一点没写）
+
+感谢Cleanroom团队提供的1.12.2开发套件。
+
+使用MIT协议。
