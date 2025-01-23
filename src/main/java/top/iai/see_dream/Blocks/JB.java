@@ -24,60 +24,67 @@ import top.iai.see_dream.RegisterUtil;
 
 import java.util.Random;
 
+//“末地烛？”方块类
 public class JB extends BlockDirectional {
+    // 构造函数
     protected JB(Material materialIn, String name) {
         super(materialIn);
+        // 设置默认状态，方向向上
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.UP));
+        // 注册方块
         RegisterUtil.initBlock(this, name);
     }
+
+    // 重写获取渲染类型的方法
     @Override
     public EnumBlockRenderType getRenderType(IBlockState state) {
+        // 返回默认渲染类型
         return EnumBlockRenderType.MODEL;
     }
+
+    // 重写邻居方块变化时的方法
     @Override
     public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
+        // 如果不是客户端
         if(!worldIn.isRemote) {
+            // 在该位置生成一个牛奶桶物品
             spawnAsEntity(worldIn, pos, new ItemStack(Items.MILK_BUCKET));
         }
     }
+
+    // 重写方块被右键时的方法
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
                                     EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        // 如果不是客户端
         if(!worldIn.isRemote) {
+            // 在该位置生成一个牛奶桶物品
             spawnAsEntity(worldIn, pos, new ItemStack(Items.MILK_BUCKET));
             return true;
         }
         return true;
     }
+
+    // 定义三个轴对齐的边界框
     protected static final AxisAlignedBB END_ROD_VERTICAL_AABB = new AxisAlignedBB(0.375D, 0.0D, 0.375D, 0.625D, 1.0D, 0.625D);
     protected static final AxisAlignedBB END_ROD_NS_AABB = new AxisAlignedBB(0.375D, 0.375D, 0.0D, 0.625D, 0.625D, 1.0D);
     protected static final AxisAlignedBB END_ROD_EW_AABB = new AxisAlignedBB(0.0D, 0.375D, 0.375D, 1.0D, 0.625D, 0.625D);
-    /**
-     * Returns the blockstate with the given rotation from the passed blockstate. If inapplicable, returns the passed
-     * blockstate.
-     * @deprecated call via {@link IBlockState#withRotation(Rotation)} whenever possible. Implementing/overriding is
-     * fine.
-     */
+
+    // 重写根据旋转调整状态的方法
     public IBlockState withRotation(IBlockState state, Rotation rot)
     {
         return state.withProperty(FACING, rot.rotate((EnumFacing)state.getValue(FACING)));
     }
 
-    /**
-     * Returns the blockstate with the given mirror of the passed blockstate. If inapplicable, returns the passed
-     * blockstate.
-     * @deprecated call via {@link IBlockState#withMirror(Mirror)} whenever possible. Implementing/overriding is fine.
-     */
+    // 重写根据镜像调整状态的方法
     public IBlockState withMirror(IBlockState state, Mirror mirrorIn)
     {
         return state.withProperty(FACING, mirrorIn.mirror((EnumFacing)state.getValue(FACING)));
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#getBoundingBox(IBlockAccess,BlockPos)} whenever possible.
-     * Implementing/overriding is fine.
-     */
+    // 重写获取边界框的方法
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
     {
+        // 根据方向轴获取不同的边界框
         switch (((EnumFacing)state.getValue(FACING)).getAxis())
         {
             case X:
@@ -90,35 +97,25 @@ public class JB extends BlockDirectional {
         }
     }
 
-    /**
-     * Used to determine ambient occlusion and culling when rebuilding chunks for render
-     * @deprecated call via {@link IBlockState#isOpaqueCube()} whenever possible. Implementing/overriding is fine.
-     */
+    // 重写判断是否为不透明立方体的方法
     public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
 
-    /**
-     * @deprecated call via {@link IBlockState#isFullCube()} whenever possible. Implementing/overriding is fine.
-     */
+    // 重写判断是否为完整立方体的方法
     public boolean isFullCube(IBlockState state)
     {
         return false;
     }
 
-    /**
-     * Checks if this block can be placed exactly at the given position.
-     */
+    // 重写判断是否可以放置方块的方法
     public boolean canPlaceBlockAt(World worldIn, BlockPos pos)
     {
         return true;
     }
 
-    /**
-     * Called by ItemBlocks just before a block is actually set in the world, to allow for adjustments to the
-     * IBlockstate
-     */
+    // 重写根据放置位置和朝向获取状态的方法
     public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
     {
         IBlockState iblockstate = worldIn.getBlockState(pos.offset(facing.getOpposite()));
@@ -136,11 +133,7 @@ public class JB extends BlockDirectional {
         return this.getDefaultState().withProperty(FACING, facing);
     }
 
-    /**
-     * Called periodically clientside on blocks near the player to show effects (like furnace fire particles). Note that
-     * this method is unrelated to  and {@link #needsRandomTick}, and will always be called regardless
-     * of whether the block can receive random update ticks
-     */
+    // 末地烛粒子方法，直接复制的原版代码
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(IBlockState stateIn, World worldIn, BlockPos pos, Random rand)
     {
@@ -156,9 +149,7 @@ public class JB extends BlockDirectional {
         }
     }
 
-    /**
-     * Convert the given metadata into a BlockState for this Block
-     */
+    // 重写根据元数据获取状态的方法
     public IBlockState getStateFromMeta(int meta)
     {
         IBlockState iblockstate = this.getDefaultState();
@@ -166,48 +157,32 @@ public class JB extends BlockDirectional {
         return iblockstate;
     }
 
-    /**
-     * Gets the render layer this block will render on. SOLID for solid blocks, CUTOUT or CUTOUT_MIPPED for on-off
-     * transparency (glass, reeds), TRANSLUCENT for fully blended transparency (stained glass)
-     */
+    // 重写获取渲染层的方法
     @SideOnly(Side.CLIENT)
     public BlockRenderLayer getRenderLayer()
     {
         return BlockRenderLayer.CUTOUT;
     }
 
-    /**
-     * Convert the BlockState into the correct metadata value
-     */
+    // 重写根据状态获取元数据的方法
     public int getMetaFromState(IBlockState state)
     {
         return ((EnumFacing)state.getValue(FACING)).getIndex();
     }
 
+    // 创建方块状态容器
     protected BlockStateContainer createBlockState()
     {
         return new BlockStateContainer(this, new IProperty[] {FACING});
     }
 
-    /**
-     * @deprecated call via  whenever possible. Implementing/overriding is fine.
-     */
+    // 重写获取推动反应的方法
     public EnumPushReaction getPushReaction(IBlockState state)
     {
         return EnumPushReaction.NORMAL;
     }
 
-    /**
-     * Get the geometry of the queried face at the given position and state. This is used to decide whether things like
-     * buttons are allowed to be placed on the face, or how glass panes connect to the face, among other things.
-     * <p>
-     * Common values are {@code SOLID}, which is the default, and {@code UNDEFINED}, which represents something that
-     * does not fit the other descriptions and will generally cause other things not to connect to the face.
-     *
-     * @return an approximation of the form of the given face
-     * @deprecated call via {@link IBlockState#getBlockFaceShape(IBlockAccess,BlockPos,EnumFacing)} whenever possible.
-     * Implementing/overriding is fine.
-     */
+    // 重写获取方块面形状的方法
     public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face)
     {
         return BlockFaceShape.UNDEFINED;

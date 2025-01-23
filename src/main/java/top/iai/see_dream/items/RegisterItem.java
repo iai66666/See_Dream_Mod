@@ -18,22 +18,27 @@ import java.util.Objects;
 import static top.iai.see_dream.items.ItemPi.PIX;
 import static top.iai.see_dream.items.ItemPi.PI_1;
 
+// 事件订阅者，用于注册类事件
 @Mod.EventBusSubscriber(modid = See_Dream.MODID)
 public class RegisterItem {
 
+    // 用于存放所有待注册物品的列表
     public static final List<Item> ITEM_LIST = new ArrayList<>();
 
+    // 创建物品对象，并将其添加到ITEM_LIST列表中
     public static final Item NULL = new ItemExe("java.lang.nullpointerexception");
     public static final Item PI_X = new ItemPi("pix", PIX);
     public static final Item PI = new ItemPi("pi", PI_1);
 
     @SubscribeEvent
     public static void handleItem(RegistryEvent.Register<Item> event) {
+        // 注册所有待注册的物品
         event.getRegistry().registerAll(ITEM_LIST.toArray(new Item[0]));
     }
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void modelRegister(ModelRegistryEvent event) {
+        // 为所有待注册的物品设置自定义模型资源位置
         for (Item item : ITEM_LIST) {
             ModelLoader.setCustomModelResourceLocation(
                     item,

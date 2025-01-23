@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import top.iai.see_dream.RegisterUtil;
 
 @SuppressWarnings("deprecation")
+// “挂画”方块类
 public class BlockBaseDraw extends Block {
     // 构造函数，初始化BlockBase对象
     public BlockBaseDraw(Material material, String name) {
@@ -43,10 +44,6 @@ public class BlockBaseDraw extends Block {
     protected static final AxisAlignedBB UP_AABB = new AxisAlignedBB(0.0D, 0.9375D,0.0D , 1.0D, 1.0D, 1.0D);
     protected static final AxisAlignedBB DOWN_AABB = new AxisAlignedBB(0.0D, 0.0D,0.0D , 1.0D, 0.0625D, 1.0D);
 
-    /**
-     * @deprecated 尽可能通过 {@link IBlockState#getBoundingBox(IBlockAccess,BlockPos)} 调用。
-     * 实现/重写是可以的。
-     */
     @SuppressWarnings({"EnhancedSwitchMigration", "DefaultNotLastCaseInSwitch"})
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {

@@ -13,6 +13,7 @@ public class RegisterTileEntity {
 
     @SubscribeEvent
     public static void onBlockRegister(RegistryEvent.Register<Block> event) {
+        //示范代码，请勿使用，用于创建方块实体
         //GameRegistry.registerTileEntity(J_B.class,new ResourceLocation(See_Dream.MODID, "j_b"));
     }
 }

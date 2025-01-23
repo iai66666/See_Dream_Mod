@@ -15,6 +15,7 @@ import top.iai.see_dream.RegisterUtil;
 
 import java.util.Objects;
 
+// 自定义物品类空指针物品，继承自Item
 public class ItemExe extends Item {
     // 构造函数
     public ItemExe(String name){
@@ -24,6 +25,7 @@ public class ItemExe extends Item {
     }
 
     // 重写onItemRightClick方法，处理玩家右键点击物品时的逻辑
+    @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn){
         ItemStack itemstack = playerIn.getHeldItem(handIn); // 获取玩家手中持有的物品堆叠
 

@@ -2,6 +2,7 @@ package top.iai.see_dream;
 
 import net.minecraftforge.fml.common.Mod;
 
+// 注解Mod，声明模组信息
 @Mod(modid = See_Dream.MODID, name = See_Dream.NAME, version = See_Dream.VERSION, useMetadata = true)
 public class See_Dream {
     public static final String MODID = "see_dream";
