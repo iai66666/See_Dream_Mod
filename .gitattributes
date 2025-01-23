@@ -2,3 +2,7 @@
 *.css linguist-language=java
 *.html linguist-language=java
 *.glsl linguist-language=java
+*.vsh linguist-language=java
+*.fsh linguist-language=java
+*.vert linguist-language=java
+*.frag linguist-language=java
