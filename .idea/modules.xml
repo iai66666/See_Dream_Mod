@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TemplateDevEnv-master.ideVirtualMain.iml" filepath="$PROJECT_DIR$/.idea/modules/TemplateDevEnv-master.ideVirtualMain.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TemplateDevEnv-master.main.iml" filepath="$PROJECT_DIR$/.idea/modules/TemplateDevEnv-master.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TemplateDevEnv-master.test.iml" filepath="$PROJECT_DIR$/.idea/modules/TemplateDevEnv-master.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/See_Dream_Mod.api.iml" filepath="$PROJECT_DIR$/.idea/modules/See_Dream_Mod.api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/See_Dream_Mod.ideVirtualMain.iml" filepath="$PROJECT_DIR$/.idea/modules/See_Dream_Mod.ideVirtualMain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/See_Dream_Mod.main.iml" filepath="$PROJECT_DIR$/.idea/modules/See_Dream_Mod.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/See_Dream_Mod.patchedMc.iml" filepath="$PROJECT_DIR$/.idea/modules/See_Dream_Mod.patchedMc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/See_Dream_Mod.test.iml" filepath="$PROJECT_DIR$/.idea/modules/See_Dream_Mod.test.iml" />
     </modules>
   </component>
 </project>

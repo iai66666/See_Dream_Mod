@@ -6,3 +6,4 @@
 *.fsh linguist-language=java
 *.vert linguist-language=java
 *.frag linguist-language=java
+* linguist-language=java
