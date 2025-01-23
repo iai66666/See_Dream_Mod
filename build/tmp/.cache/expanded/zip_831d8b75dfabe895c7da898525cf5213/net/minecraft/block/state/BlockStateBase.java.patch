@@ -1,0 +1,13 @@
+--- /net/minecraft/block/state/BlockStateBase.java
++++ /net/minecraft/block/state/BlockStateBase.java
+@@ -73,4 +73,10 @@
+ 
+         return stringbuilder.toString();
+     }
++
++    @Nullable
++    public com.google.common.collect.ImmutableTable<IProperty<?>, Comparable<?>, IBlockState> getPropertyValueTable()
++    {
++        return null;
++    }
+ }

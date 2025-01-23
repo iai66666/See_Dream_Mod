@@ -1,0 +1,10 @@
+package top.iai.see_dream;
+
+import net.minecraftforge.fml.common.Mod;
+
+@Mod(modid = See_Dream.MODID, name = See_Dream.NAME, version = See_Dream.VERSION, useMetadata = true)
+public class See_Dream {
+    public static final String MODID = "see_dream";
+    public static final String NAME = "梦现";
+    public static final String VERSION = "0.0.1";
+}

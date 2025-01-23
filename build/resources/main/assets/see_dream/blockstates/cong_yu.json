@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "see_dream:cong_yu" },
+    "facing=south": { "model": "see_dream:cong_yu", "y": 180 },
+    "facing=west":  { "model": "see_dream:cong_yu", "y": 270 },
+    "facing=east":  { "model": "see_dream:cong_yu", "y": 90 }
+  }
+}

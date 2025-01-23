@@ -1,0 +1,10 @@
+--- /net/minecraft/util/text/Style.java
++++ /net/minecraft/util/text/Style.java
+@@ -238,7 +238,6 @@
+         return this;
+     }
+ 
+-    @SideOnly(Side.CLIENT)
+     public String func_150218_j()
+     {
+         if (this.func_150229_g())

@@ -1,0 +1,8 @@
+#PARSE_ESCAPES
+#ITEM
+item.java.lang.nullpointerexception.name=§c§ljava.lang.NullPointerException
+tile.jb.name=§c§l末地烛？
+item.pi.name=§c§l钻石镐？
+item.pix.name=§6§l钻石镐pro max
+tile.cong_yu.name=§2§l丛雨挂画
+itemGroup.tap.See.Dream=§4§liai的奇妙小玩意

@@ -1,0 +1,103 @@
+---- Minecraft Crash Report ----
+// You should try our sister game, Minceraft!
+
+Time: 1/21/25 10:50 PM
+Description: Ticking entity
+
+java.lang.NullPointerException: 你抛出了一个java.lang.NullPointerException
+	at top.iai.see_dream.Entity.EntityNull.onImpact(EnityNull.java:55)
+	at net.minecraft.entity.projectile.EntityThrowable.onUpdate(EntityThrowable.java:265)
+	at net.minecraft.world.World.updateEntityWithOptionalForce(World.java:2171)
+	at net.minecraft.world.WorldServer.updateEntityWithOptionalForce(WorldServer.java:870)
+	at net.minecraft.world.World.updateEntity(World.java:2130)
+	at net.minecraft.world.World.updateEntities(World.java:1931)
+	at net.minecraft.world.WorldServer.updateEntities(WorldServer.java:642)
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:841)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:742)
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:192)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:591)
+	at java.lang.Thread.run(Thread.java:750)
+
+No Mixin Metadata is found in the Stacktrace.
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Server thread
+Stacktrace:
+	at top.iai.see_dream.Entity.EntityNull.onImpact(EnityNull.java:55)
+	at net.minecraft.entity.projectile.EntityThrowable.onUpdate(EntityThrowable.java:265)
+	at net.minecraft.world.World.updateEntityWithOptionalForce(World.java:2171)
+	at net.minecraft.world.WorldServer.updateEntityWithOptionalForce(WorldServer.java:870)
+	at net.minecraft.world.World.updateEntity(World.java:2130)
+
+-- Entity being ticked --
+Details:
+	Entity Type: null (top.iai.see_dream.Entity.EntityNull)
+	Entity ID: 1927
+	Entity Name: 不明
+	Entity's Exact location: 109.36, 64.18, 69.71
+	Entity's Block location: World: (109,64,69), Chunk: (at 13,4,5 in 6,4; contains blocks 96,0,64 to 111,255,79), Region: (0,0; contains chunks 0,0 to 31,31, blocks 0,0,0 to 511,255,511)
+	Entity's Momentum: 0.83, -0.80, 0.20
+	Entity's Passengers: []
+	Entity's Vehicle: ~~ERROR~~ NullPointerException: null
+Stacktrace:
+	at net.minecraft.world.World.updateEntities(World.java:1931)
+	at net.minecraft.world.WorldServer.updateEntities(WorldServer.java:642)
+
+-- Affected level --
+Details:
+	Level name: test
+	All players: 1 total; [EntityPlayerMP['Developer'/308, l='test', x=65.20, y=70.00, z=56.59]]
+	Chunk stats: ServerChunkCache: 4225 Drop: 0
+	Level seed: -7963906055568326150
+	Level generator: ID 00 - default, ver 1. Features enabled: true
+	Level generator options: 
+	Level spawn location: World: (60,64,56), Chunk: (at 12,4,8 in 3,3; contains blocks 48,0,48 to 63,255,63), Region: (0,0; contains chunks 0,0 to 31,31, blocks 0,0,0 to 511,255,511)
+	Level time: 32860 game time, 20559 day time
+	Level dimension: 0
+	Level storage version: 0x04ABD - Anvil
+	Level weather: Rain time: 13908 (now: false), thunder time: 68360 (now: false)
+	Level game mode: Game mode: creative (ID 1). Hardcore: false. Cheats: true
+Stacktrace:
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:841)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:742)
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:192)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:591)
+	at java.lang.Thread.run(Thread.java:750)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.12.2
+	Operating System: Windows 10 (amd64) version 10.0
+	Java Version: 1.8.0_432, Azul Systems, Inc.
+	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode), Azul Systems, Inc.
+	Memory: 2548900448 bytes (2430 MB) / 3500670976 bytes (3338 MB) up to 5726797824 bytes (5461 MB)
+	JVM Flags: 2 total; -Xms1G -Xmx6G
+	IntCache: cache: 0, tcache: 6, allocated: 20, tallocated: 86
+	FML: MCP 9.42 Powered by Forge 14.23.5.2847 6 mods loaded, 6 mods active
+	States: 'U' = Unloaded 'L' = Loaded 'C' = Constructed 'H' = Pre-initialized 'I' = Initialized 'J' = Post-initialized 'A' = Available 'D' = Disabled 'E' = Errored
+
+	| State  | ID          | Version      | Source                          | Signature |
+	|:------ |:----------- |:------------ |:------------------------------- |:--------- |
+	| LCHIJA | minecraft   | 1.12.2       | minecraft.jar                   | None      |
+	| LCHIJA | mcp         | 9.42         | minecraft.jar                   | None      |
+	| LCHIJA | mixinbooter | 9.1          | minecraft.jar                   | None      |
+	| LCHIJA | FML         | 8.0.99.99    | recompiled_minecraft-1.12.2.jar | None      |
+	| LCHIJA | forge       | 14.23.5.2847 | recompiled_minecraft-1.12.2.jar | None      |
+	| LCHIJA | see_dream   | 0.0.1        | modid-1.0.0-dev.jar             | None      |
+
+	Loaded coremods (and transformers): 
+StripLatestForgeRequirements (strip-latest-forge-requirements-1.0-dev.jar)
+  
+OSXNarratorBlocker (osxnarratorblocker-1.0-dev.jar)
+  
+MixinBooter (mixinbooter-9.1.jar)
+  
+	GL info: ~~ERROR~~ RuntimeException: No OpenGL context found in the current thread.
+	Profiler Position: N/A (disabled)
+	Player Count: 1 / 8; [EntityPlayerMP['Developer'/308, l='test', x=65.20, y=70.00, z=56.59]]
+	Type: Integrated Server (map_client.txt)
+	Is Modded: Definitely; Client brand changed to 'fml,forge'

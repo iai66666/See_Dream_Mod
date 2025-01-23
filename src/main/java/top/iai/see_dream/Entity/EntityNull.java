@@ -1,0 +1,56 @@
+package top.iai.see_dream.Entity;
+
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.projectile.EntityThrowable;
+import net.minecraft.item.Item;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import static top.iai.see_dream.items.RegisterItem.NULL;
+
+public class EntityNull extends EntityThrowable {
+
+    // 构造函数：创建一个由指定实体抛出的Null实体
+    public EntityNull(World worldIn, EntityLivingBase throwerIn) {
+        super(worldIn, throwerIn);
+    }
+
+    /**
+     * 处理World#setEntityState方法的状态更新
+     * 仅在客户端执行
+     */
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void handleStatusUpdate(byte id) {
+        if (id == 3) {
+            // 在Null实体周围生成8个粒子效果
+            for (int i = 0; i < 8; ++i) {
+                this.world.spawnParticle(EnumParticleTypes.ITEM_CRACK, this.posX, this.posY, this.posZ, ((double) this.rand.nextFloat() - 0.5D) * 0.08D, ((double) this.rand.nextFloat() - 0.5D) * 0.08D, ((double) this.rand.nextFloat() - 0.5D) * 0.08D, Item.getIdFromItem(NULL));
+            }
+        }
+    }
+
+    /**
+     * 当此可投掷实体撞击到方块或实体时调用
+     */
+    @Override
+    protected void onImpact(RayTraceResult result) {
+        // 如果撞击到了实体
+        if (result.entityHit != null) {
+            result.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.ignoreEntity), (float) Integer.MAX_VALUE);
+        }
+        // 如果未撞击到任何实体
+        if (result.entityHit == null) {
+            throw new NullPointerException("你抛出了一个java.lang.NullPointerException");
+        }
+        // 如果不是客户端世界，则更新实体状态并销毁此实体
+        if (!this.world.isRemote) {
+            this.world.setEntityState(this, (byte) 3);
+            this.setDead();
+        }
+    }
+}
