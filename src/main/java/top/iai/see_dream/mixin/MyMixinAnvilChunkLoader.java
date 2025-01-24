@@ -3,10 +3,10 @@ package top.iai.see_dream.mixin;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.chunk.Chunk;
@@ -40,10 +40,11 @@ public abstract class MyMixinAnvilChunkLoader {
         }
 
         // 如果没有玩家在视野范围内，随机变化地形
-        randomizeTerrain(chunkIn);
+        see_Dream_Mod$randomizeTerrain(chunkIn);
     }
 
-    private void randomizeTerrain(Chunk chunk) {
+    @Unique
+    private void see_Dream_Mod$randomizeTerrain(Chunk chunk) {
         // 实现地形随机变化的逻辑
         // 例如，修改区块中的方块或生物群系
     }
