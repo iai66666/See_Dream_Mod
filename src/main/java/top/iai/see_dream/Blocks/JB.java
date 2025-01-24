@@ -65,7 +65,6 @@ public class JB extends BlockDirectional {
 
             //鹿JB做梦（不是
             Dream dream = new Dream(worldIn);
-            dream.setPosition(Minecraft.getMinecraft().player.posX,Minecraft.getMinecraft().player.posY,Minecraft.getMinecraft().player.posZ);
             worldIn.spawnEntity(dream);
 
             return true;
