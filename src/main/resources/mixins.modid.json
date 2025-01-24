@@ -1,5 +1,5 @@
 {
-	"package": "",
+	"package": "top.iai.see_dream.mixin",
 	"required": true,
 	"refmap": "${mixin_refmap}",
 	"target": "@env(DEFAULT)",
