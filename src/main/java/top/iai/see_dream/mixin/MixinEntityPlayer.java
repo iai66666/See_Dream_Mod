@@ -16,7 +16,8 @@ public abstract class MixinEntityPlayer implements IViewerPositionAndAngles {
     protected double PosY = this.PosY;
     protected double PosZ = this.PosZ;
     // 获取玩家的视野范围
-    public float[] getViewerPositionAndAngles() {
+    public float[] getViewerPositionAndAngles()
+    {
         float posX = (float) this.PosX;
         float posY = (float) this.PosY + this.getEyeHeight();
         float posZ = (float) this.PosZ;
