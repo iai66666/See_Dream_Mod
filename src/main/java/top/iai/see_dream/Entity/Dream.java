@@ -31,21 +31,24 @@ public class Dream extends Entity
     {
         //在这里添加可以变成的方块
         possibleBlocks.add(Blocks.ICE);//我超，冰！
+        possibleBlocks.add(Blocks.LOG);//橡木原来叫log
+        possibleBlocks.add(Blocks.STONE);
     }
 
     @Override
     public void onUpdate()
     {if (world != null) {
-        //每秒执行一次
+        //每？秒执行一次
         long currentTime = world.getTotalWorldTime();
-        if (currentTime % 100 == 0 && currentTime != lastExecutionTime) {
+        if (currentTime % 20 == 0 && currentTime != lastExecutionTime) {
             lastExecutionTime = currentTime;
             Dreaming();
         }
-    }else return;
+    }
     }
     //做梦
     private void Dreaming() {
+        //玩家的一些数据
         double posX = 0;
         double posY = 0;
         double posZ = 0;
@@ -54,16 +57,37 @@ public class Dream extends Entity
         if (world != null) {
         World world = Minecraft.getMinecraft().world;
             //偷iai的代码 iai:草
-            for (EntityPlayer player : world.playerEntities) {
-                //这些个if语句防止空指针的，不写就有可能崩
-                if (player != null) {
-                    posX = player.posX;
-                    posY = player.posY;
-                    posZ = player.posZ;
-                    yaw = player.cameraYaw;
-                    pitch = player.cameraPitch;
-                } else return;
-        }
+            synchronized(world.playerEntities){
+                for (EntityPlayer player : world.playerEntities) {
+                    //这些个if语句防止空指针的，不写就有可能崩
+                    if (player != null) {
+                        posX = player.posX;
+                        posY = player.posY;
+                        posZ = player.posZ;
+                        yaw = player.rotationYaw;
+                        pitch = player.rotationPitch;
+                    } else return;
+                }
+            }
+            //定义变化范围，范围半径为128长、128宽、32高
+            int rangeX = 128;
+            int rangeY = 32;
+            int rangeZ = 128;
+            //在范围内取随机数
+            int randomX = (int)posX - rangeX + random.nextInt(2 * rangeX + 1);
+            int randomY = (int)posY - rangeY + random.nextInt(2 * rangeY + 1);
+            int randomZ = (int)posZ - rangeZ + random.nextInt(2 * rangeZ + 1);
+            BlockPos newBlockPos = new BlockPos(randomX, randomY, randomZ);
+            //距离判断是好使的，这个圆锥判断有点问题
+            if (!isPointInCone(randomX, randomY, randomZ, posX, posY, posZ, pitch, yaw, 1, 65) && Math.sqrt(Math.pow(randomX - posX, 2) + Math.pow(randomY - posY, 2) + Math.pow(randomZ - posZ, 2)) > 20) {
+                //随机选择新的方块
+                Block newBlock = possibleBlocks.get(random.nextInt(possibleBlocks.size()));
+                //替换方块
+                synchronized(newBlock){
+                    world.setBlockState(newBlockPos, newBlock.getDefaultState(), 3);
+                }
+            }
+            /*
             // 玩家范围：128^3区域
             int startX = (int) posX - 128;
             int startY = (int) posY - 32;
@@ -71,8 +95,8 @@ public class Dream extends Entity
             int endX = (int) posX + 128;
             int endY = (int) posY + 32;
             int endZ = (int) posZ + 128;
-
             // 遍历该范围内的方块,这部分循环逻辑只有天顶星电脑才能挺住，**建议重写**
+            // 确实是一坨，注释保留当笑话看：）
             for (int x = startX; x <= endX; x++) {
                 for (int z = startZ; z <= endZ; z++) {
                     for (int y = startY; y <= endY; y++) {
@@ -89,34 +113,30 @@ public class Dream extends Entity
                         }
                     }
                 }
-            }
+            }*/
         }else return;
     }
+
     //判断一个点是否在圆锥内
-    // (Px, Py, Pz) 是要判断的点
+    //(Px, Py, Pz) 是要判断的点
     //(Vx, Vy, Vz) 是圆锥顶点
     //(dX, dY, Dz) 是圆锥轴线的方向单位向量
     //angle 是圆锥的半角，单位度
-    public static boolean isPointInCone(double Px, double Py, double Pz, double Vx, double Vy, double Vz, double dX, double dY, double Dz, double angle) {
-
-        // 1. 计算点 P 和圆锥顶点 V 之间的向量
+    public static boolean isPointInCone(double Px, double Py, double Pz, double Vx, double Vy, double Vz, double dX, double dY, double Dz, double angle)
+    {
+        //计算点 P 和圆锥顶点 V 之间的向量
         double vectorVPx = Px - Vx;
         double vectorVPy = Py - Vy;
         double vectorVPz = Pz - Vz;
-
-        // 2. 计算向量 VP 和圆锥轴线方向 d 的点积
+        //计算向量 VP 和圆锥轴线方向 d 的点积
         double dotProduct = vectorVPx * dX + vectorVPy * dY + vectorVPz * Dz;
-
-        // 3. 计算向量 VP 的模长
+        //计算向量 VP 的模长
         double lengthVP = Math.sqrt(vectorVPx * vectorVPx + vectorVPy * vectorVPy + vectorVPz * vectorVPz);
-
-        // 4. 计算点积和模长的商得到向量 VP 和轴线方向 d 之间的余弦值
+        //计算点积和模长的商得到向量 VP 和轴线方向 d 之间的余弦值
         double cosThetaPrime = dotProduct / lengthVP;
-
-        // 5. 计算圆锥的半角的余弦值
+        //计算圆锥的半角的余弦值
         double cosTheta = Math.cos(Math.toRadians(angle));
-
-        // 6. 判断点是否在圆锥内
+        //判断点是否在圆锥内
         return cosThetaPrime >= cosTheta;
     }
 
@@ -132,5 +152,4 @@ public class Dream extends Entity
     protected void writeEntityToNBT(NBTTagCompound compound) {
 
     }
-
 }

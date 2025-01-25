@@ -22,7 +22,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import top.iai.see_dream.Entity.Dream;
-import top.iai.see_dream.Entity.EntityNull;
 import top.iai.see_dream.RegisterUtil;
 
 import java.util.Random;
