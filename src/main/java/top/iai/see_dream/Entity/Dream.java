@@ -70,8 +70,6 @@ public class Dream extends Entity
                     } else return;
                 }
             }
-            //玩家视觉向量
-            System.out.println("yaw" + yaw + " " + "pitch" + pitch);
             //定义变化范围，范围半径为128长、128宽、32高
             int rangeX = 128;
             int rangeY = 32;
@@ -82,7 +80,13 @@ public class Dream extends Entity
             int randomZ = (int)posZ - rangeZ + random.nextInt(2 * rangeZ + 1);
             BlockPos newBlockPos = new BlockPos(randomX, randomY, randomZ);
             //距离判断是好使的，这个圆锥判断有点问题
-            if (isPointInCone(randomX, randomY, randomZ, posX, posY, posZ, pitch, yaw, 180, 65) && Math.sqrt(Math.pow(randomX - posX, 2) + Math.pow(randomY - posY, 2) + Math.pow(randomZ - posZ, 2)) > 20) {
+            double var3 = Math.cos(-yaw * 0.017453292 - (float)Math.PI);
+            double var5 = Math.sin(-yaw * 0.017453292 - (float)Math.PI);
+            double var7 = -Math.cos(-pitch * 0.017453292);
+            double var9 = Math.sin(-pitch * 0.017453292);
+            Vec3d VEC = new Vec3d(var5 * var7, var9, var3 * var7);
+            System.out.println("yaw"  + " " + yaw + " " + "pitch" + pitch + " " + VEC.x + " " + VEC.y + " " + VEC.z);
+            if (!isPointInCone(randomX, randomY, randomZ, posX, posY, posZ, VEC.x,  VEC.y,  VEC.z, 65) && Math.sqrt(Math.pow(randomX - posX, 2) + Math.pow(randomY - posY, 2) + Math.pow(randomZ - posZ, 2)) > 20) {
                 //随机选择新的方块
                 Block newBlock = possibleBlocks.get(random.nextInt(possibleBlocks.size()));
                 //替换方块
