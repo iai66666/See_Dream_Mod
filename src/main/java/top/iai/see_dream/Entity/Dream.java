@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -62,13 +63,15 @@ public class Dream extends Entity
                     //这些个if语句防止空指针的，不写就有可能崩
                     if (player != null) {
                         posX = player.posX;
-                        posY = player.posY;
+                        posY = player.posY + player.getEyeHeight();
                         posZ = player.posZ;
-                        yaw = player.rotationYaw;
+                        yaw = player.rotationYaw % 360;
                         pitch = player.rotationPitch;
                     } else return;
                 }
             }
+            //玩家视觉向量
+            System.out.println("yaw" + yaw + " " + "pitch" + pitch);
             //定义变化范围，范围半径为128长、128宽、32高
             int rangeX = 128;
             int rangeY = 32;
@@ -79,7 +82,7 @@ public class Dream extends Entity
             int randomZ = (int)posZ - rangeZ + random.nextInt(2 * rangeZ + 1);
             BlockPos newBlockPos = new BlockPos(randomX, randomY, randomZ);
             //距离判断是好使的，这个圆锥判断有点问题
-            if (!isPointInCone(randomX, randomY, randomZ, posX, posY, posZ, pitch, yaw, 1, 65) && Math.sqrt(Math.pow(randomX - posX, 2) + Math.pow(randomY - posY, 2) + Math.pow(randomZ - posZ, 2)) > 20) {
+            if (isPointInCone(randomX, randomY, randomZ, posX, posY, posZ, pitch, yaw, 180, 65) && Math.sqrt(Math.pow(randomX - posX, 2) + Math.pow(randomY - posY, 2) + Math.pow(randomZ - posZ, 2)) > 20) {
                 //随机选择新的方块
                 Block newBlock = possibleBlocks.get(random.nextInt(possibleBlocks.size()));
                 //替换方块
@@ -137,7 +140,8 @@ public class Dream extends Entity
         //计算圆锥的半角的余弦值
         double cosTheta = Math.cos(Math.toRadians(angle));
         //判断点是否在圆锥内
-        return cosThetaPrime >= cosTheta;
+        boolean TEST = cosThetaPrime >= cosTheta;
+        return TEST;
     }
 
     @Override
