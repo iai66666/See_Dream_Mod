@@ -2,7 +2,7 @@ package top.iai.see_dream;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
-import top.iai.see_dream.dream.dream;
+import top.iai.see_dream.Events.dream;
 
 // 注解Mod，声明模组信息
 @Mod(modid = See_Dream.MODID, name = See_Dream.NAME, version = See_Dream.VERSION, useMetadata = true)

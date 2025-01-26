@@ -1,16 +1,19 @@
 package top.iai.see_dream.Entity;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.item.Item;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import static top.iai.see_dream.items.RegisterItem.NULL;
+import static top.iai.see_dream.items.RegisterItem.modelRegister;
 
 public class EntityNull extends EntityThrowable {
 
@@ -47,6 +50,9 @@ public class EntityNull extends EntityThrowable {
         // 如果撞击到了实体，则对该实体造成最大伤害值（Integer.MAX_VALUE）的伤害
         if (result.entityHit != null) {
             result.entityHit.attackEntityFrom(DamageSource.causeThrownDamage(this, this.ignoreEntity), (float) Integer.MAX_VALUE);
+            if(Minecraft.getMinecraft().world != null && Minecraft.getMinecraft().player != null ){
+                Minecraft.getMinecraft().player.sendMessage(ITextComponent.Serializer.jsonToComponent("{\"text\":\"它catch了\"}"));
+            }
         }
         // 如果未撞击到任何实体，则抛出NullPointerException异常
         if (result.entityHit == null) {
