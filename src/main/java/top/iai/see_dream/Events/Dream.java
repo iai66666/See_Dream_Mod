@@ -59,9 +59,7 @@ public class Dream {
         long currentTime = world.getTotalWorldTime();
         if (currentTime % 5 == 0 && currentTime != lastExecutionTime) {
             lastExecutionTime = currentTime;
-            synchronized (world) {
-                Dreaming();
-            }
+            Dreaming();
         }
     }
     @SubscribeEvent
@@ -72,112 +70,112 @@ public class Dream {
         long currentTime = worldServer.getWorldTime();
         if (currentTime % 5 == 0 && currentTime != lastExecutionTime) {
             lastExecutionTime = currentTime;
-            synchronized (worldServer){
-                DreamingServer();
-            }
+            DreamingServer();
         }
     }
     @SideOnly(Side.CLIENT)
     //做梦
     private void Dreaming() {
-        //获取第一个玩家
-        if (world == null) return;
-        if (world.playerEntities.isEmpty()) return;
-        player = world.playerEntities.get(0);
+        synchronized (world) {
+            //获取第一个玩家
+            if (world.playerEntities.isEmpty()) return;
+            player = world.playerEntities.get(0);
 
-        //计算玩家视线方向
-        double var3 = Math.cos(-(player.rotationYaw % 360) * 0.017453292 - (float)Math.PI);
-        double var5 = Math.sin(-(player.rotationYaw % 360) * 0.017453292 - (float)Math.PI);
-        double var7 = -Math.cos(-player.rotationPitch * 0.017453292);
-        double var9 = Math.sin(-player.rotationPitch * 0.017453292);
-        //玩家视线的方向
-        Vec3d VEC = new Vec3d(var5 * var7, var9, var3 * var7);
-        //定义变化范围，范围半径为128长、128宽、8高
-        int rangeX = 128;
-        int rangeY = 8;
-        int rangeZ = 128;
+            //计算玩家视线方向
+            double var3 = Math.cos(-(player.rotationYaw % 360) * 0.017453292 - (float) Math.PI);
+            double var5 = Math.sin(-(player.rotationYaw % 360) * 0.017453292 - (float) Math.PI);
+            double var7 = -Math.cos(-player.rotationPitch * 0.017453292);
+            double var9 = Math.sin(-player.rotationPitch * 0.017453292);
+            //玩家视线的方向
+            Vec3d VEC = new Vec3d(var5 * var7, var9, var3 * var7);
+            //定义变化范围，范围半径为128长、128宽、8高
+            int rangeX = 128;
+            int rangeY = 8;
+            int rangeZ = 128;
 
-        //在范围内取随机数
-        randomX = (int) player.posX - rangeX + random.nextInt(2 * rangeX + 1);
-        randomY = (int) (player.posY + player.getEyeHeight()) - rangeY + random.nextInt(2 * rangeY + 1);
-        randomZ = (int) player.posZ - rangeZ + random.nextInt(2 * rangeZ + 1);
-        BlockPos blockPos = new BlockPos(randomX, randomY, randomZ);
+            //在范围内取随机数
+            randomX = (int) player.posX - rangeX + random.nextInt(2 * rangeX + 1);
+            randomY = (int) (player.posY + player.getEyeHeight()) - rangeY + random.nextInt(2 * rangeY + 1);
+            randomZ = (int) player.posZ - rangeZ + random.nextInt(2 * rangeZ + 1);
+            BlockPos blockPos = new BlockPos(randomX, randomY, randomZ);
 
-        //距离判断 + 视锥判断（先判断距离避免不必要的计算
-        if (Math.sqrt(Math.pow(randomX - player.posX, 2) + Math.pow(randomY - player.posY + player.getEyeHeight(), 2) + Math.pow(randomZ - player.posZ, 2)) > 15
-                && !isPointInCone(randomX, randomY, randomZ, player.posX, player.posY + player.getEyeHeight(), player.posZ, VEC.x, VEC.y, VEC.z, 65)) {
+            //距离判断 + 视锥判断（先判断距离避免不必要的计算
+            if (Math.sqrt(Math.pow(randomX - player.posX, 2) + Math.pow(randomY - player.posY + player.getEyeHeight(), 2) + Math.pow(randomZ - player.posZ, 2)) > 15
+                    && !isPointInCone(randomX, randomY, randomZ, player.posX, player.posY + player.getEyeHeight(), player.posZ, VEC.x, VEC.y, VEC.z, 65)) {
 
-            //获取要替换的方块
-            Block currentBlock = world.getBlockState(blockPos).getBlock();
-            //声明新方块
-            Block newBlock;
-            //尝试获取该方块的变化表
-            List<Block> possibleTransformations = blockTransformMap.get(currentBlock);
-            //判断是不是特殊方块
-            if (possibleTransformations != null && !possibleTransformations.isEmpty()) {
-                // 从对应的表中随机选择一个方块
-                newBlock = possibleTransformations.get(random.nextInt(possibleTransformations.size()));
-            }
-            //啥也不是，从空气表中选
-            else {
-                newBlock = airBlocks.get(random.nextInt(airBlocks.size()));
-            }
-            //替换方块
-            world.setBlockState(blockPos, newBlock.getDefaultState(), 1|2|3);
-        }
-
-        //玩家眼睛的位置
-        Vec3d rayStartPoint = player.getPositionVector().add(0, player.getEyeHeight(), 0);
-        //射线最大距离
-        double maxDistance = 128;
-
-        //向下偏转10~30°
-        double angle = (random.nextDouble() * 20 + 10);
-
-        //绕 x 轴旋转
-        double cosTheta = Math.cos(Math.toRadians(angle));
-        double sinTheta = Math.sin(Math.toRadians(angle));
-
-        double newVy = -VEC.y * cosTheta - -VEC.z * sinTheta;
-        double newVz = -VEC.y * sinTheta + -VEC.z * cosTheta;
-
-        Vec3d rayVec3d = new Vec3d(-VEC.x, newVy, newVz);
-
-        //执行射线检测
-        RayTraceResult result = world.rayTraceBlocks(rayStartPoint, rayStartPoint.add(rayVec3d.x * maxDistance, rayVec3d.y * maxDistance, rayVec3d.z * maxDistance));
-
-        if (result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
-            //获取碰撞到的方块位置
-            BlockPos hitPos = result.getBlockPos();
-            //如果碰到的方块距离较小，不执行
-            if(Math.sqrt(Math.pow(hitPos.getX() - player.posX, 2) + Math.pow(hitPos.getY() - player.posY + player.getEyeHeight(), 2) + Math.pow(hitPos.getZ() - player.posZ, 2)) < 4) return;
-            // 获取当前方块
-            Block currentBlock = world.getBlockState(hitPos).getBlock();
-            Block newBlock;
-
-            //查找该方块的变化表
-            List<Block> possibleTransformations = blockTransformMap.get(currentBlock);
-
-            //如果有对应变化的方块，随机选择一个
-            if (possibleTransformations != null && !possibleTransformations.isEmpty()) {
-                //草方块增生
-                if (currentBlock == Blocks.GRASS || possibleTransformations == plantsBlocks) {
-                    newBlock = Blocks.GRASS;
-                    if (newBlock != null) {
-                        world.addBlockEvent(blockPos, newBlock, 0, 0);
-                        world.setBlockState(hitPos.add(random.nextInt(3) - 1, random.nextInt(2), random.nextInt(3) - 1), newBlock.getDefaultState(), 1 | 2 | 3);
-                    }
-                    return;
+                //获取要替换的方块
+                Block currentBlock = world.getBlockState(blockPos).getBlock();
+                //声明新方块
+                Block newBlock;
+                //尝试获取该方块的变化表
+                List<Block> possibleTransformations = blockTransformMap.get(currentBlock);
+                //判断是不是特殊方块
+                if (possibleTransformations != null && !possibleTransformations.isEmpty()) {
+                    // 从对应的表中随机选择一个方块
+                    newBlock = possibleTransformations.get(random.nextInt(possibleTransformations.size()));
                 }
-                newBlock = possibleTransformations.get(random.nextInt(possibleTransformations.size()));
-            }
-            //否则从空气方块表中随机选择
-            else {
-                newBlock = airBlocks.get(random.nextInt(airBlocks.size()));
+                //啥也不是，从空气表中选
+                else {
+                    newBlock = airBlocks.get(random.nextInt(airBlocks.size()));
+                }
+                //替换方块
+                world.setBlockState(blockPos, newBlock.getDefaultState(), 1 | 2 | 3);
             }
 
-            //替换方块
-            world.setBlockState(hitPos, newBlock.getDefaultState(), 1|2|3);
+            //玩家眼睛的位置
+            Vec3d rayStartPoint = player.getPositionVector().add(0, player.getEyeHeight(), 0);
+            //射线最大距离
+            double maxDistance = 128;
+
+            //向下偏转
+            double angle = (random.nextDouble() * 15 + 15);
+
+            //绕 x 轴旋转
+            double cosTheta = Math.cos(Math.toRadians(angle));
+            double sinTheta = Math.sin(Math.toRadians(angle));
+
+            double newVy = -VEC.y * cosTheta - -VEC.z * sinTheta;
+            double newVz = -VEC.y * sinTheta + -VEC.z * cosTheta;
+
+            Vec3d rayVec3d = new Vec3d(-VEC.x, newVy, newVz);
+
+            //执行射线检测
+            RayTraceResult result = world.rayTraceBlocks(rayStartPoint, rayStartPoint.add(rayVec3d.x * maxDistance, rayVec3d.y * maxDistance, rayVec3d.z * maxDistance));
+
+            if (result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
+                //获取碰撞到的方块位置
+                BlockPos hitPos = result.getBlockPos();
+                //如果碰到的方块距离较小，不执行
+                if (Math.sqrt(Math.pow(hitPos.getX() - player.posX, 2) + Math.pow(hitPos.getY() - player.posY + player.getEyeHeight(), 2) + Math.pow(hitPos.getZ() - player.posZ, 2)) < 4)
+                    return;
+                // 获取当前方块
+                Block currentBlock = world.getBlockState(hitPos).getBlock();
+                Block newBlock;
+
+                //查找该方块的变化表
+                List<Block> possibleTransformations = blockTransformMap.get(currentBlock);
+
+                //如果有对应变化的方块，随机选择一个
+                if (possibleTransformations != null && !possibleTransformations.isEmpty()) {
+                    //草方块增生
+                    if (currentBlock == Blocks.GRASS || possibleTransformations == plantsBlocks) {
+                        newBlock = Blocks.GRASS;
+                        if (newBlock != null) {
+                            world.addBlockEvent(blockPos, newBlock, 0, 0);
+                            world.setBlockState(hitPos.add(random.nextInt(3) - 1, random.nextInt(2), random.nextInt(3) - 1), newBlock.getDefaultState(), 1 | 2 | 3);
+                        }
+                        return;
+                    }
+                    newBlock = possibleTransformations.get(random.nextInt(possibleTransformations.size()));
+                }
+                //否则从空气方块表中随机选择
+                else {
+                    newBlock = airBlocks.get(random.nextInt(airBlocks.size()));
+                }
+
+                //替换方块
+                world.setBlockState(hitPos, newBlock.getDefaultState(), 1 | 2 | 3);
+            }
         }
     }
 
@@ -205,105 +203,106 @@ public class Dream {
     }
 
     private void DreamingServer(){//获取第一个玩家
-        if (worldServer.playerEntities.isEmpty()) {
-            return;
-        }
+        synchronized (worldServer) {
+
+            if (worldServer.playerEntities.isEmpty()) return;
             player = worldServer.playerEntities.get(0);
 
+            //计算玩家视线方向
+            double var3 = Math.cos(-(player.rotationYaw % 360) * 0.017453292 - (float) Math.PI);
+            double var5 = Math.sin(-(player.rotationYaw % 360) * 0.017453292 - (float) Math.PI);
+            double var7 = -Math.cos(-player.rotationPitch * 0.017453292);
+            double var9 = Math.sin(-player.rotationPitch * 0.017453292);
+            //玩家视线的方向
+            Vec3d VEC = new Vec3d(var5 * var7, var9, var3 * var7);
+            //定义变化范围，范围半径为128长、128宽、8高
+            int rangeX = 128;
+            int rangeY = 8;
+            int rangeZ = 128;
 
-        //计算玩家视线方向
-        double var3 = Math.cos(-(player.rotationYaw % 360) * 0.017453292 - (float)Math.PI);
-        double var5 = Math.sin(-(player.rotationYaw % 360) * 0.017453292 - (float)Math.PI);
-        double var7 = -Math.cos(-player.rotationPitch * 0.017453292);
-        double var9 = Math.sin(-player.rotationPitch * 0.017453292);
-        //玩家视线的方向
-        Vec3d VEC = new Vec3d(var5 * var7, var9, var3 * var7);
-        //定义变化范围，范围半径为128长、128宽、8高
-        int rangeX = 128;
-        int rangeY = 8;
-        int rangeZ = 128;
+            //在范围内取随机数
+            randomX = (int) player.posX - rangeX + random.nextInt(2 * rangeX + 1);
+            randomY = (int) (player.posY + player.getEyeHeight()) - rangeY + random.nextInt(2 * rangeY + 1);
+            randomZ = (int) player.posZ - rangeZ + random.nextInt(2 * rangeZ + 1);
+            BlockPos blockPos = new BlockPos(randomX, randomY, randomZ);
 
-        //在范围内取随机数
-        randomX = (int) player.posX - rangeX + random.nextInt(2 * rangeX + 1);
-        randomY = (int) (player.posY + player.getEyeHeight()) - rangeY + random.nextInt(2 * rangeY + 1);
-        randomZ = (int) player.posZ - rangeZ + random.nextInt(2 * rangeZ + 1);
-        BlockPos blockPos = new BlockPos(randomX, randomY, randomZ);
+            //距离判断 + 视锥判断（先判断距离避免不必要的计算
+            if (Math.sqrt(Math.pow(randomX - player.posX, 2) + Math.pow(randomY - player.posY + player.getEyeHeight(), 2) + Math.pow(randomZ - player.posZ, 2)) > 15
+                    && !isPointInCone(randomX, randomY, randomZ, player.posX, player.posY + player.getEyeHeight(), player.posZ, VEC.x, VEC.y, VEC.z, 65)) {
 
-        //距离判断 + 视锥判断（先判断距离避免不必要的计算
-        if (Math.sqrt(Math.pow(randomX - player.posX, 2) + Math.pow(randomY - player.posY + player.getEyeHeight(), 2) + Math.pow(randomZ - player.posZ, 2)) > 15
-                && !isPointInCone(randomX, randomY, randomZ, player.posX, player.posY + player.getEyeHeight(), player.posZ, VEC.x, VEC.y, VEC.z, 65)) {
-
-            //获取要替换的方块
-            Block currentBlock = worldServer.getBlockState(blockPos).getBlock();
-            //声明新方块
-            Block newBlock;
-            //尝试获取该方块的变化表
-            List<Block> possibleTransformations = blockTransformMap.get(currentBlock);
-            //判断是不是特殊方块
-            if (possibleTransformations != null && !possibleTransformations.isEmpty()) {
-                // 从对应的表中随机选择一个方块
-                newBlock = possibleTransformations.get(random.nextInt(possibleTransformations.size()));
-            }
-            //啥也不是，从空气表中选
-            else {
-                newBlock = airBlocks.get(random.nextInt(airBlocks.size()));
-            }
-            //替换方块
-            worldServer.setBlockState(blockPos, newBlock.getDefaultState(), 1|2|3);
-        }
-
-        //玩家眼睛的位置
-        Vec3d rayStartPoint = player.getPositionVector().add(0, player.getEyeHeight(), 0);
-        //射线最大距离
-        double maxDistance = 128.0;
-
-        //向下偏转10~30°
-        double angle = (random.nextDouble() * 20 + 10);
-
-        //绕 x 轴旋转
-        double cosTheta = Math.cos(Math.toRadians(angle));
-        double sinTheta = Math.sin(Math.toRadians(angle));
-
-        double newVy = -VEC.y * cosTheta - -VEC.z * sinTheta;
-        double newVz = -VEC.y * sinTheta + -VEC.z * cosTheta;
-
-        Vec3d rayVec3d = new Vec3d(-VEC.x, newVy, newVz);
-
-        // 执行射线检测
-        RayTraceResult result = world.rayTraceBlocks(rayStartPoint, rayStartPoint.add(rayVec3d.x * maxDistance, rayVec3d.y * maxDistance, rayVec3d.z * maxDistance));
-
-        if (result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
-            // 获取碰撞到的方块位置
-            BlockPos hitPos = result.getBlockPos();
-            //如果碰到的方块距离较小，不执行
-            if(Math.sqrt(Math.pow(hitPos.getX() - player.posX, 2) + Math.pow(hitPos.getY() - player.posY + player.getEyeHeight(), 2) + Math.pow(hitPos.getZ() - player.posZ, 2)) < 4) return;
-            // 获取当前方块
-            Block currentBlock = worldServer.getBlockState(hitPos).getBlock();
-            Block newBlock;
-
-            // 查找该方块的变化表
-            List<Block> possibleTransformations = blockTransformMap.get(currentBlock);
-
-            // 如果有对应变化的方块，随机选择一个
-            if (possibleTransformations != null && !possibleTransformations.isEmpty()) {
-                //草方块增生
-                if (currentBlock == Blocks.GRASS || possibleTransformations == plantsBlocks){
-                    newBlock = Blocks.GRASS;
-                    if (newBlock != null) {
-                        worldServer.addBlockEvent(blockPos, newBlock, 0, 0);
-                        worldServer.setBlockState(hitPos.add(random.nextInt(3) - 1, random.nextInt(2), random.nextInt(3) - 1), newBlock.getDefaultState(), 1 | 2 | 3);
-                    }
-                    return;
+                //获取要替换的方块
+                Block currentBlock = worldServer.getBlockState(blockPos).getBlock();
+                //声明新方块
+                Block newBlock;
+                //尝试获取该方块的变化表
+                List<Block> possibleTransformations = blockTransformMap.get(currentBlock);
+                //判断是不是特殊方块
+                if (possibleTransformations != null && !possibleTransformations.isEmpty()) {
+                    // 从对应的表中随机选择一个方块
+                    newBlock = possibleTransformations.get(random.nextInt(possibleTransformations.size()));
                 }
-                newBlock = possibleTransformations.get(random.nextInt(possibleTransformations.size()));
-            }
-            // 否则从空气方块表中随机选择
-            else {
-                newBlock = airBlocks.get(random.nextInt(airBlocks.size()));
+                //啥也不是，从空气表中选
+                else {
+                    newBlock = airBlocks.get(random.nextInt(airBlocks.size()));
+                }
+                //替换方块
+                worldServer.setBlockState(blockPos, newBlock.getDefaultState(), 1 | 2 | 3);
             }
 
-            // 替换方块
-            worldServer.setBlockState(hitPos, newBlock.getDefaultState(), 1|2|3);
+            //玩家眼睛的位置
+            Vec3d rayStartPoint = player.getPositionVector().add(0, player.getEyeHeight(), 0);
+            //射线最大距离
+            double maxDistance = 128.0;
+
+            //向下偏转
+            double angle = (random.nextDouble() * 15 + 15);
+
+            //绕 x 轴旋转
+            double cosTheta = Math.cos(Math.toRadians(angle));
+            double sinTheta = Math.sin(Math.toRadians(angle));
+
+            double newVy = -VEC.y * cosTheta - -VEC.z * sinTheta;
+            double newVz = -VEC.y * sinTheta + -VEC.z * cosTheta;
+
+            Vec3d rayVec3d = new Vec3d(-VEC.x, newVy, newVz);
+
+            // 执行射线检测
+            RayTraceResult result = world.rayTraceBlocks(rayStartPoint, rayStartPoint.add(rayVec3d.x * maxDistance, rayVec3d.y * maxDistance, rayVec3d.z * maxDistance));
+
+            if (result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
+                // 获取碰撞到的方块位置
+                BlockPos hitPos = result.getBlockPos();
+                //如果碰到的方块距离较小，不执行
+                if (Math.sqrt(Math.pow(hitPos.getX() - player.posX, 2) + Math.pow(hitPos.getY() - player.posY + player.getEyeHeight(), 2) + Math.pow(hitPos.getZ() - player.posZ, 2)) < 4)
+                    return;
+                // 获取当前方块
+                Block currentBlock = worldServer.getBlockState(hitPos).getBlock();
+                Block newBlock;
+
+                // 查找该方块的变化表
+                List<Block> possibleTransformations = blockTransformMap.get(currentBlock);
+
+                // 如果有对应变化的方块，随机选择一个
+                if (possibleTransformations != null && !possibleTransformations.isEmpty()) {
+                    //草方块增生
+                    if (currentBlock == Blocks.GRASS || possibleTransformations == plantsBlocks) {
+                        newBlock = Blocks.GRASS;
+                        if (newBlock != null) {
+                            worldServer.addBlockEvent(blockPos, newBlock, 0, 0);
+                            worldServer.setBlockState(hitPos.add(random.nextInt(3) - 1, random.nextInt(2), random.nextInt(3) - 1), newBlock.getDefaultState(), 1 | 2 | 3);
+                        }
+                        return;
+                    }
+                    newBlock = possibleTransformations.get(random.nextInt(possibleTransformations.size()));
+                }
+                // 否则从空气方块表中随机选择
+                else {
+                    newBlock = airBlocks.get(random.nextInt(airBlocks.size()));
+                }
+
+                // 替换方块
+                worldServer.setBlockState(hitPos, newBlock.getDefaultState(), 1 | 2 | 3);
+            }
         }
     }
 }
