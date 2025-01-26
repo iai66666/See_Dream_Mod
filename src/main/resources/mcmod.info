@@ -2,7 +2,7 @@
 	"modid": "see_dream",
 	"name": "梦现",
 	"license": "MIT",
-	"version": "0.0.3b",
+	"version": "0.1.0b",
 	"mcversion": "1.12.2",
 	"description": "看不见的梦是是最不稳定的。",
 	"authorList": ["iphoneandintelcz"],
