@@ -8,7 +8,6 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -21,7 +20,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import top.iai.see_dream.Entity.Dream;
 import top.iai.see_dream.RegisterUtil;
 
 import java.util.Random;
@@ -61,11 +59,6 @@ public class JB extends BlockDirectional {
         if(!worldIn.isRemote) {
             // 在该位置生成一个牛奶桶物品
             spawnAsEntity(worldIn, pos, new ItemStack(Items.MILK_BUCKET));
-
-            //鹿JB做梦（不是
-            Dream dream = new Dream(worldIn);
-            worldIn.spawnEntity(dream);
-
             return true;
         }
         return true;
