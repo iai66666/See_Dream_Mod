@@ -18,6 +18,7 @@ public class RegisterBlock {
 
     // 新建方块对象
     public static final Block CONG_YU = new BlockBaseDraw(Material.WOOD, "cong_yu").setHardness(1f).setLightOpacity(0);
+    public static final Block BRONYA = new BlockBaseDraw(Material.WOOD, "bronya").setHardness(1f).setLightOpacity(0);
     public static final Block JB = new JB(Material.IRON, "jb").setHardness(1f).setLightOpacity(0);
 
     @SubscribeEvent

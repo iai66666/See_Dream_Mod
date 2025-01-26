@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "see_dream:bronya" },
+    "facing=south": { "model": "see_dream:bronya", "y": 180 },
+    "facing=west":  { "model": "see_dream:bronya", "y": 270 },
+    "facing=east":  { "model": "see_dream:bronya", "y": 90 }
+  }
+}

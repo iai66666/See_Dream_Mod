@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import static top.iai.see_dream.Blocks.RegisterBlock.BRONYA;
 import static top.iai.see_dream.Blocks.RegisterBlock.CONG_YU;
 // 创建一个新的类ModTabs，用于存放mod创造模式tab
 public class ModTabs {
@@ -12,9 +13,9 @@ public class ModTabs {
     public static final CreativeTabs THE_DREAM = new CreativeTabs(CreativeTabs.getNextID(), "tap.See.Dream") {
         //sideonly注解表示该方法只在客户端执行，不加注解服务端运行会崩溃
         @SideOnly(Side.CLIENT)
+        //重写createIcon方法，返回一个物品栈，用于在tab中显示
         public ItemStack createIcon() {
-            // 设置创造模式tab的图标为cong_yu物品
-            return new ItemStack(CONG_YU);
+            return new ItemStack(BRONYA);
         }
     };
 }
