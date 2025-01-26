@@ -54,12 +54,14 @@ public class Dream {
     @SideOnly(Side.CLIENT)
     public void onTick(TickEvent event) {
         world = Minecraft.getMinecraft().world != null ? Minecraft.getMinecraft().world : null;
-        if(world == null||Minecraft.getMinecraft().world == null || Minecraft.getMinecraft().player == null ) return;
+        if(world == null || Minecraft.getMinecraft().player == null ) return;
         //每？秒执行一次
         long currentTime = world.getTotalWorldTime();
         if (currentTime % 5 == 0 && currentTime != lastExecutionTime) {
             lastExecutionTime = currentTime;
-            Dreaming();
+            synchronized (world) {
+                Dreaming();
+            }
         }
     }
     @SubscribeEvent
@@ -70,7 +72,9 @@ public class Dream {
         long currentTime = worldServer.getWorldTime();
         if (currentTime % 5 == 0 && currentTime != lastExecutionTime) {
             lastExecutionTime = currentTime;
-            DreamingServer();
+            synchronized (worldServer){
+                DreamingServer();
+            }
         }
     }
     @SideOnly(Side.CLIENT)
@@ -78,11 +82,8 @@ public class Dream {
     private void Dreaming() {
         //获取第一个玩家
         if (world == null) return;
-        if (world.playerEntities.isEmpty()) {
-            return;
-        }
-            player = world.playerEntities.get(0);
-
+        if (world.playerEntities.isEmpty()) return;
+        player = world.playerEntities.get(0);
 
         //计算玩家视线方向
         double var3 = Math.cos(-(player.rotationYaw % 360) * 0.017453292 - (float)Math.PI);
@@ -128,12 +129,25 @@ public class Dream {
         //玩家眼睛的位置
         Vec3d rayStartPoint = player.getPositionVector().add(0, player.getEyeHeight(), 0);
         //射线最大距离
-        double maxDistance = 100.0;
-        // 执行射线检测
-        RayTraceResult result = world.rayTraceBlocks(rayStartPoint, rayStartPoint.add(-VEC.x * maxDistance, -VEC.y * maxDistance, -VEC.z * maxDistance));
+        double maxDistance = 128;
+
+        //向下偏转10~30°
+        double angle = (random.nextDouble() * 20 + 10);
+
+        //绕 x 轴旋转
+        double cosTheta = Math.cos(Math.toRadians(angle));
+        double sinTheta = Math.sin(Math.toRadians(angle));
+
+        double newVy = -VEC.y * cosTheta - -VEC.z * sinTheta;
+        double newVz = -VEC.y * sinTheta + -VEC.z * cosTheta;
+
+        Vec3d rayVec3d = new Vec3d(-VEC.x, newVy, newVz);
+
+        //执行射线检测
+        RayTraceResult result = world.rayTraceBlocks(rayStartPoint, rayStartPoint.add(rayVec3d.x * maxDistance, rayVec3d.y * maxDistance, rayVec3d.z * maxDistance));
 
         if (result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
-            // 获取碰撞到的方块位置
+            //获取碰撞到的方块位置
             BlockPos hitPos = result.getBlockPos();
             //如果碰到的方块距离较小，不执行
             if(Math.sqrt(Math.pow(hitPos.getX() - player.posX, 2) + Math.pow(hitPos.getY() - player.posY + player.getEyeHeight(), 2) + Math.pow(hitPos.getZ() - player.posZ, 2)) < 4) return;
@@ -141,29 +155,28 @@ public class Dream {
             Block currentBlock = world.getBlockState(hitPos).getBlock();
             Block newBlock;
 
-            // 查找该方块的变化表
+            //查找该方块的变化表
             List<Block> possibleTransformations = blockTransformMap.get(currentBlock);
 
-            // 如果有对应变化的方块，随机选择一个
+            //如果有对应变化的方块，随机选择一个
             if (possibleTransformations != null && !possibleTransformations.isEmpty()) {
                 //草方块增生
-                if (currentBlock == Blocks.GRASS || possibleTransformations == plantsBlocks){
+                if (currentBlock == Blocks.GRASS || possibleTransformations == plantsBlocks) {
                     newBlock = Blocks.GRASS;
                     if (newBlock != null) {
                         world.addBlockEvent(blockPos, newBlock, 0, 0);
+                        world.setBlockState(hitPos.add(random.nextInt(3) - 1, random.nextInt(2), random.nextInt(3) - 1), newBlock.getDefaultState(), 1 | 2 | 3);
                     }
-                    world.setBlockState(hitPos.add(random.nextInt(3)-1, random.nextInt(2),random.nextInt(3)-1), newBlock.getDefaultState(), 1|2|3);
                     return;
                 }
                 newBlock = possibleTransformations.get(random.nextInt(possibleTransformations.size()));
             }
-            // 否则从空气方块表中随机选择
+            //否则从空气方块表中随机选择
             else {
                 newBlock = airBlocks.get(random.nextInt(airBlocks.size()));
             }
 
-            // 替换方块
-
+            //替换方块
             world.setBlockState(hitPos, newBlock.getDefaultState(), 1|2|3);
         }
     }
@@ -190,6 +203,7 @@ public class Dream {
         //判断点是否在圆锥内
         return cosThetaPrime >= cosTheta;
     }
+
     private void DreamingServer(){//获取第一个玩家
         if (worldServer.playerEntities.isEmpty()) {
             return;
@@ -241,9 +255,22 @@ public class Dream {
         //玩家眼睛的位置
         Vec3d rayStartPoint = player.getPositionVector().add(0, player.getEyeHeight(), 0);
         //射线最大距离
-        double maxDistance = 100.0;
+        double maxDistance = 128.0;
+
+        //向下偏转10~30°
+        double angle = (random.nextDouble() * 20 + 10);
+
+        //绕 x 轴旋转
+        double cosTheta = Math.cos(Math.toRadians(angle));
+        double sinTheta = Math.sin(Math.toRadians(angle));
+
+        double newVy = -VEC.y * cosTheta - -VEC.z * sinTheta;
+        double newVz = -VEC.y * sinTheta + -VEC.z * cosTheta;
+
+        Vec3d rayVec3d = new Vec3d(-VEC.x, newVy, newVz);
+
         // 执行射线检测
-        RayTraceResult result = worldServer.rayTraceBlocks(rayStartPoint, rayStartPoint.add(-VEC.x * maxDistance, -VEC.y * maxDistance, -VEC.z * maxDistance));
+        RayTraceResult result = world.rayTraceBlocks(rayStartPoint, rayStartPoint.add(rayVec3d.x * maxDistance, rayVec3d.y * maxDistance, rayVec3d.z * maxDistance));
 
         if (result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
             // 获取碰撞到的方块位置
@@ -264,8 +291,8 @@ public class Dream {
                     newBlock = Blocks.GRASS;
                     if (newBlock != null) {
                         worldServer.addBlockEvent(blockPos, newBlock, 0, 0);
+                        worldServer.setBlockState(hitPos.add(random.nextInt(3) - 1, random.nextInt(2), random.nextInt(3) - 1), newBlock.getDefaultState(), 1 | 2 | 3);
                     }
-                    worldServer.setBlockState(hitPos.add(random.nextInt(3)-1, random.nextInt(2),random.nextInt(3)-1), newBlock.getDefaultState(), 1|2|3);
                     return;
                 }
                 newBlock = possibleTransformations.get(random.nextInt(possibleTransformations.size()));
@@ -276,7 +303,6 @@ public class Dream {
             }
 
             // 替换方块
-
             worldServer.setBlockState(hitPos, newBlock.getDefaultState(), 1|2|3);
         }
     }
