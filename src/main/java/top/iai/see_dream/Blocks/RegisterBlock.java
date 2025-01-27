@@ -22,6 +22,7 @@ public class RegisterBlock {
     public static final Block ANNELIESE = new BlockBaseDraw(Material.WOOD, "anneliese").setHardness(1f).setLightOpacity(0);
     public static final Block SPECTER = new BlockBaseDraw(Material.WOOD, "specter").setHardness(1f).setLightOpacity(0);
     public static final Block BAI_LU = new BlockBaseDraw(Material.WOOD, "bai_lu").setHardness(1f).setLightOpacity(0);
+    public static final Block SL1ME = new BlockBaseDraw(Material.WOOD, "sl1me").setHardness(1f).setLightOpacity(0);
     public static final Block JB = new JB(Material.IRON, "jb").setHardness(1f).setLightOpacity(0);
 
     @SubscribeEvent

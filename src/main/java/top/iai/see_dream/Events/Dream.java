@@ -93,9 +93,8 @@ public class Dream {
         if(worldServer == null) return;
         if (worldServer.playerEntities.isEmpty()) return;
         player = worldServer.playerEntities.get(0);
-
         tick++;
-        if (tick >= 100) {
+        if (tick >= 40) {
             tick = 0;
             setRandom();
             DreamingServer();
@@ -118,7 +117,7 @@ public class Dream {
 
                 //距离判断 + 视锥判断（先判断距离避免不必要的计算
                 if (Math.sqrt(Math.pow(randomX - player.posX, 2) + Math.pow(randomY - player.posY + player.getEyeHeight(), 2) + Math.pow(randomZ - player.posZ, 2)) > 15
-                        && isPointInCone(randomX, randomY, randomZ, player.posX, player.posY + player.getEyeHeight(), player.posZ, VEC.x, VEC.y, VEC.z, 65)) {
+                        && isPointInCone(randomX, randomY, randomZ, player.posX, player.posY + player.getEyeHeight(), player.posZ, VEC.x, VEC.y, VEC.z, 70)) {
 
                     //获取要替换的方块
                     Block currentBlock = worldServer.getBlockState(blockPos).getBlock();
