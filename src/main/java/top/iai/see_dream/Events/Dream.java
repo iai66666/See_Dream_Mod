@@ -21,7 +21,7 @@ public class Dream {
     WorldServer worldServer;
     private final Lock lock = new ReentrantLock();
     private final Random random = new Random();
-    private long lastExecutionTime = 0;
+    private int tick = 0;
     int rangeX;
     int rangeY;
     int rangeZ;
@@ -89,16 +89,16 @@ public class Dream {
     //服务端代码
     @SubscribeEvent
     public void onSeverTick(TickEvent event) {
-            worldServer = getWorld(0) != null ? getWorld(0) : null;
-            if(worldServer == null) return;
-            if (worldServer.playerEntities.isEmpty()) return;
-            player = worldServer.playerEntities.get(0);
-            //每？秒执行一次
-        long currentTime = worldServer.getWorldTime();
-        if (currentTime % 5 == 0 && currentTime != lastExecutionTime) {
-                lastExecutionTime = currentTime;
-                setRandom();
-                DreamingServer();
+        worldServer = getWorld(0) != null ? getWorld(0) : null;
+        if(worldServer == null) return;
+        if (worldServer.playerEntities.isEmpty()) return;
+        player = worldServer.playerEntities.get(0);
+
+        tick++;
+        if (tick >= 100) {
+            tick = 0;
+            setRandom();
+            DreamingServer();
         }
     }
     private void DreamingServer(){//获取第一个玩家
@@ -149,7 +149,7 @@ public class Dream {
                 double maxDistance = 128.0;
 
                 //向下偏转
-                double angle = (random.nextDouble() * 15 + 15);
+                double angle = (-random.nextDouble() * 20 - 15);
 
                 //绕 x 轴旋转
                 double cosTheta = Math.cos(Math.toRadians(angle));
