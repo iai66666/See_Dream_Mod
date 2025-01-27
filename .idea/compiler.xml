@@ -44,7 +44,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_STRING" value="-encoding utf8" />
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="See_Dream_Mod.main" options="&quot;-AoutSrgFile=D:\See_Dream_Mod\build\tmp\mixins\mixins.srg&quot; &quot;-AoutRefMapFile=D:\See_Dream_Mod\build\tmp\mixins\see_dream.mixins.refmap.json&quot;" />
+      <module name="See_Dream_Mod.main" options="&quot;-AoutSrgFile=C:\all\See_Dream_Mod\build\tmp\mixins\mixins.srg&quot; &quot;-AoutRefMapFile=C:\all\See_Dream_Mod\build\tmp\mixins\see_dream.mixins.refmap.json&quot;" />
     </option>
   </component>
 </project>
