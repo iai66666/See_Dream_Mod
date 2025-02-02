@@ -21,6 +21,7 @@ public class Dream {
     WorldServer worldServer;
     private final Lock lock = new ReentrantLock();
     private final Random random = new Random();
+    public static boolean dream = false;
     private int waterTick = 0;
     private int grassTick = 0;
     int rangeX = 128;
@@ -40,7 +41,7 @@ public class Dream {
     private static final List<Block> dirtBlocks = Arrays.asList(Blocks.DIRT, Blocks.GRASS, Blocks.GRASS_PATH, Blocks.FARMLAND);
     private static final List<Block> stonesBlocks = Arrays.asList(Blocks.STONE, Blocks.COAL_ORE, Blocks.IRON_ORE, Blocks.GOLD_ORE, Blocks.DIAMOND_ORE);
     private static final List<Block> plantsBlocks = Arrays.asList(Blocks.TALLGRASS, Blocks.DOUBLE_PLANT);
-    private static final List<Block> airBlocks = Arrays.asList(Blocks.FLOWING_WATER, Blocks.FLOWING_LAVA);
+    private static final List<Block> airBlocks = Arrays.asList(Blocks.WATER, Blocks.GRASS, Blocks.LAVA, Blocks.TNT);
     //表的表
     private static final List<List<Block>> blocksListsList = Arrays.asList(logsBlocks, leavesBlocks, dirtBlocks, stonesBlocks, plantsBlocks);
     //字典
@@ -59,6 +60,7 @@ public class Dream {
     //服务端代码
     @SubscribeEvent
     public void onSeverTick(TickEvent event) {
+        if (!dream) return;
         worldServer = getWorld(0) != null ? getWorld(0) : null;
         if(worldServer == null) return;
         if (worldServer.playerEntities.isEmpty()) return;
@@ -69,16 +71,16 @@ public class Dream {
     }
 
     private void dreaming(){
-        if (player == null) return;
+        //if (player == null) return;
         lock.lock();
         try {
             waterTick++;
             grassTick++;
-            if (waterTick >= 500) {
+            if (waterTick >= 40) {
                 waterTick = 0;
                 calculateDirection();
                 setRandom();
-                putWater();
+                putBlocks();
             }
             if (grassTick >= 5) {
                 grassTick = 0;
@@ -105,7 +107,7 @@ public class Dream {
             // 获取碰撞到的方块位置
             BlockPos hitPos = result.getBlockPos();
             //如果碰到的方块距离较小，不执行
-            if (Math.sqrt(Math.pow(hitPos.getX() - player.posX, 2) + Math.pow(hitPos.getY() - player.posY + player.getEyeHeight(), 2) + Math.pow(hitPos.getZ() - player.posZ, 2)) < 4)
+            if (Math.sqrt(Math.pow(hitPos.getX() - player.posX, 2) + Math.pow(hitPos.getY() - player.posY + player.getEyeHeight(), 2) + Math.pow(hitPos.getZ() - player.posZ, 2)) < 5)
                 return;
             // 获取当前方块
             Block currentBlock = worldServer.getBlockState(hitPos).getBlock();
@@ -121,22 +123,15 @@ public class Dream {
                     if (currentBlock == Blocks.GRASS || possibleTransformations == plantsBlocks) {
                         //随机坐标
                         BlockPos growPos = hitPos.add(new BlockPos(random.nextInt(5) - 1, random.nextInt(3) - 1, random.nextInt(5) - 1));
+                        //如果超过玩家的头或不是方块，不执行
+                        if (growPos.getY() - player.posY >= 2 || worldServer.getBlockState(growPos).getBlock() != Blocks.AIR) return;
                         //判断下面有没有方块，没有就下移
                         while (worldServer.isAirBlock(growPos.down()) || worldServer.getBlockState(growPos.down()).getBlock() == Blocks.TALLGRASS || worldServer.getBlockState(growPos.down()).getBlock() == Blocks.DOUBLE_PLANT) {
                             growPos = growPos.down();
                         }
                         //把下面的方块变成泥土
                         worldServer.setBlockState(growPos.down(), Blocks.DIRT.getDefaultState(), 2);
-                        // 判断该位置上方是否有方块
-                        Block aboveBlock = worldServer.getBlockState(growPos.up()).getBlock();
-                        if (aboveBlock != Blocks.AIR) {
-                            // 如果上方有方块，放置泥土
-                            newBlock = Blocks.DIRT;
-                        } else {
-                            // 如果上方没有方块，放置草方块
-                            newBlock = Blocks.GRASS;
-                        }
-
+                        newBlock = Blocks.GRASS;
                         if (newBlock != null) {
                             worldServer.setBlockState(growPos, newBlock.getDefaultState(), 2);
                         }
@@ -152,13 +147,13 @@ public class Dream {
         }
     }
     //放水
-    private void putWater() {
+    private void putBlocks() {
         //在范围内取随机数
         BlockPos blockPos = new BlockPos(randomX, randomY, randomZ);
 
         //距离判断 + 视锥判断（先判断距离避免不必要的计算
         if (Math.sqrt(Math.pow(randomX - player.posX, 2) + Math.pow(randomY - player.posY + player.getEyeHeight(), 2) + Math.pow(randomZ - player.posZ, 2)) > 15
-                && isPointInCone(randomX, randomY, randomZ, player.posX, player.posY + player.getEyeHeight(), player.posZ, playerGazeDirection.x, playerGazeDirection.y, playerGazeDirection.z, 70)) {
+                && isPointInCone(randomX, randomY, randomZ, player.posX, player.posY + player.getEyeHeight(), player.posZ, playerGazeDirection.x, playerGazeDirection.y, playerGazeDirection.z, 80)) {
 
             //获取要替换的方块
             Block currentBlock = worldServer.getBlockState(blockPos).getBlock();
@@ -192,7 +187,7 @@ public class Dream {
     //取随机数
     public void setRandom(){
         randomX = (int) player.posX - rangeX + random.nextInt(2 * rangeX + 1);
-        randomY = (int) (player.posY + player.getEyeHeight()) - rangeY + random.nextInt(2 * rangeY + 1) + 32;
+        randomY = (int) (player.posY + player.getEyeHeight()) - rangeY + random.nextInt(2 * rangeY + 1) + 16;
         randomZ = (int) player.posZ - rangeZ + random.nextInt(2 * rangeZ + 1);
     }
     //判断一个点是否在圆锥内
