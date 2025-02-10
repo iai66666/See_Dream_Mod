@@ -12,14 +12,11 @@ import net.minecraft.init.Blocks;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static net.minecraftforge.common.DimensionManager.getWorld;
 
 public class Dream {
     WorldServer worldServer;
-    private final Lock lock = new ReentrantLock();
     private final Random random = new Random();
     public static boolean dream = false;
     private int waterTick = 0;
@@ -71,25 +68,19 @@ public class Dream {
     }
 
     private void dreaming(){
-        //if (player == null) return;
-        lock.lock();
-        try {
             waterTick++;
             grassTick++;
-            if (waterTick >= 40) {
+            if (waterTick >= 400) {
                 waterTick = 0;
                 calculateDirection();
                 setRandom();
                 putBlocks();
             }
-            if (grassTick >= 5) {
+            if (grassTick >= 50) {
                 grassTick = 0;
                 calculateDirection();
                 growGrass();
             }
-        } finally {
-            lock.unlock();
-        }
     }
     //草方块增生
     private void growGrass() {
