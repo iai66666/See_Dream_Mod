@@ -27,6 +27,7 @@ public class Dream {
     int randomX = 0;
     int randomY = 0;
     int randomZ = 0;
+    public static int[] xyz;
     Vec3d playerGazeDirection = new Vec3d(0,0,0);
     public Dream() {
     }
@@ -177,9 +178,15 @@ public class Dream {
     }
     //取随机数
     public void setRandom(){
-        randomX = (int) player.posX - rangeX + random.nextInt(2 * rangeX + 1);
-        randomY = (int) (player.posY + player.getEyeHeight()) - rangeY + random.nextInt(2 * rangeY + 1) + 16;
-        randomZ = (int) player.posZ - rangeZ + random.nextInt(2 * rangeZ + 1);
+        if((int) player.posX - rangeX < xyz[3] & (int) player.posX - rangeX < xyz[0]) {
+            randomX = (int) player.posX - rangeX + random.nextInt(2 * rangeX + 1);
+        }
+        if ((int) (player.posY + player.getEyeHeight()) - rangeY < xyz[4] & (int) (player.posY + player.getEyeHeight()) - rangeY < xyz[1]) {
+            randomY = (int) (player.posY + player.getEyeHeight()) - rangeY + random.nextInt(2 * rangeY + 1) + 16;
+        }
+        if ((int) player.posZ - rangeZ < xyz[5] & (int) player.posZ - rangeZ < xyz[2]){
+            randomZ = (int) player.posZ - rangeZ + random.nextInt(2 * rangeZ + 1);
+        }
     }
     //判断一个点是否在圆锥内
     //(Px, Py, Pz) 是要判断的点

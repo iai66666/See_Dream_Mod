@@ -17,8 +17,11 @@ public class See_Dream {
     MinecraftForge.EVENT_BUS.register(new Dream());
     }
     @Mod.EventHandler
+// 标记该方法为Minecraft Forge Mod的事件处理方法
     public static void onServerStarting(FMLServerStartingEvent event) {
+    // 定义一个静态方法，当服务器启动时被调用，参数为FMLServerStartingEvent事件对象
         event.registerServerCommand(new ToggleDream());
+    // 在服务器启动事件中注册一个新的服务器命令，命令实例为ToggleDream类的新对象
     }
 }
 
