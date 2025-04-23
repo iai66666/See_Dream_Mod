@@ -1,4 +1,4 @@
-package com.set.setmod.Potion;
+package top.iai.see_dream.Potion;
 
 import com.set.setmod.SetMod;
 import net.minecraft.potion.Potion;
