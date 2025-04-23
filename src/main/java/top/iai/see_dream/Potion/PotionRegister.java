@@ -17,7 +17,7 @@ public class PotionRegister {
     @SubscribeEvent
     //药水注册表
     public static void registerPotion(RegistryEvent.Register<Potion> event) {
-        //由于该注册表为早期框架结构，所以需要另外添加POTIONS.add();这玩意
+        //由于该注册表为早期框架结构，所以需要另外添加POTIONS.add();
         POTIONS.add(FIRST);
         event.getRegistry().registerAll(POTIONS.toArray(new Potion[0]));
     }
