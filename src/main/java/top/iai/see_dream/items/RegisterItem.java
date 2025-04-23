@@ -37,6 +37,7 @@ public class RegisterItem {
         // 注册所有待注册的物品
         event.getRegistry().registerAll(ITEM_LIST.toArray(new Item[0]));
     }
+    //加入sideonly注解表示该方法只在客户端执行，不加注解服务端运行会崩溃
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void modelRegister(ModelRegistryEvent event) {

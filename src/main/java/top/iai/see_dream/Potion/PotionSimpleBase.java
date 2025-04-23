@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 
-//这里是BaseSimplePotion,是做空药水效果用的
+//这里是SimplePotionBase,是做空药水效果用的
 public class PotionSimpleBase extends Potion {
     protected static final ResourceLocation resource = new ResourceLocation("see_dream","textures/misc/potions.png");
     protected final int iconIndex;
@@ -23,14 +23,14 @@ public class PotionSimpleBase extends Potion {
 //        layer.getPotion().applyAttributesModifiersToEntity(this, this.getAttributeMap(), layer.getAmplifier());
 //    }
 
-
+    //这个是给buff（或者说药水效果）搞名字的
     public PotionSimpleBase(boolean isBadEffectIn, int liquidColorIn, String name, int icon) {
         super(isBadEffectIn, liquidColorIn);
         setRegistryName(new ResourceLocation(name));
         setPotionName("see_dream.potion." + name);
         iconIndex = icon;
     }
-
+    //以下为渲染（这玩意能别动尽量别动，不然调整起来巨麻烦，除非非常有自信去调整）
     @SideOnly(Side.CLIENT)
     protected void render(int x, int y, float alpha) {
         Minecraft.getMinecraft().renderEngine.bindTexture(resource);
@@ -49,14 +49,16 @@ public class PotionSimpleBase extends Potion {
 
         tessellator.draw();
     }
-
+    //重写renderInventoryEffect，该renderInventoryEffect类负责处理玩家物品栏里的图标绘制
     @Override
+    //加入sideonly注解表示该方法只在客户端执行，不加注解服务端运行会崩溃
     @SideOnly(Side.CLIENT)
     public void renderInventoryEffect(int x, int y, PotionEffect effect, Minecraft mc) {
         render(x + 6, y + 7, 1);
     }
-
+    //重写renderHUDEffect，该renderHUDEffect类负责正常游戏时 HUD 中药水效果图标的绘制
     @Override
+    //加入sideonly注解表示该方法只在客户端执行，不加注解服务端运行会崩溃
     @SideOnly(Side.CLIENT)
     public void renderHUDEffect(int x, int y, PotionEffect effect, Minecraft mc, float alpha) {
         render(x + 3, y + 3, alpha);
