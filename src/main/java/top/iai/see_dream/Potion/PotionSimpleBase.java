@@ -1,4 +1,4 @@
-package com.set.setmod.Potion;
+package top.iai.see_dream.Potion;
 
 import net.minecraft.potion.Potion;
 
@@ -14,7 +14,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 //这里是BaseSimplePotion,是做空药水效果用的
-//这里直接搬用道家深湖大佬的代码，纯懒地写了（
 public class PotionSimpleBase extends Potion {
     protected static final ResourceLocation resource = new ResourceLocation("setmod","textures/misc/potions.png");
     protected final int iconIndex;
