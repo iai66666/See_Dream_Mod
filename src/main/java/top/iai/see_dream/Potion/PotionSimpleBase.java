@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 //这里是BaseSimplePotion,是做空药水效果用的
 public class PotionSimpleBase extends Potion {
-    protected static final ResourceLocation resource = new ResourceLocation("setmod","textures/misc/potions.png");
+    protected static final ResourceLocation resource = new ResourceLocation("see_dream","textures/misc/potions.png");
     protected final int iconIndex;
 
 //    if (!this.world.isRemote)
@@ -27,7 +27,7 @@ public class PotionSimpleBase extends Potion {
     public PotionSimpleBase(boolean isBadEffectIn, int liquidColorIn, String name, int icon) {
         super(isBadEffectIn, liquidColorIn);
         setRegistryName(new ResourceLocation(name));
-        setPotionName("setmod.potion." + name);
+        setPotionName("see_dream.potion." + name);
         iconIndex = icon;
     }
 
