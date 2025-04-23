@@ -1,6 +1,6 @@
 package top.iai.see_dream.Potion;
 
-import top.iai.see_dream;
+import top.iai.see_dream.See_dream;
 import net.minecraft.potion.Potion;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = see_dream.MODID)
+@Mod.EventBusSubscriber(modid = See_Dream.MODID)
 public class PotionRegister {
     //以下是注册表/列表
     public static final List<Potion> POTIONS = new ArrayList<Potion>();
