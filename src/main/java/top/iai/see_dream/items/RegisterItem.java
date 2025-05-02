@@ -1,6 +1,7 @@
 package top.iai.see_dream.items;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -31,6 +32,7 @@ public class RegisterItem {
     public static final Item NULL = new ItemExe("java.lang.nullpointerexception");
     public static final Item PI_X = new ItemPi("pix", PIX);
     public static final Item PI = new ItemPi("pi", PI_1);
+    public static final Item MYJBHURTS = new ItemMyJBHurts(ItemMyJBHurts.myJBHurts, EntityEquipmentSlot.HEAD, "myjbhurts");
 
     @SubscribeEvent
     public static void handleItem(RegistryEvent.Register<Item> event) {
