@@ -1,0 +1,6 @@
+{
+  "jbmask": {
+    "category": "player",
+    "sounds": [{"name": "see_dream:jbmask", "stream": true}]
+  }
+}

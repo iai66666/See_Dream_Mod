@@ -7,11 +7,9 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import top.iai.see_dream.Command.ToggleDream;
 import top.iai.see_dream.See_Dream;
 
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ public class RegisterItem {
     public static final Item NULL = new ItemExe("java.lang.nullpointerexception");
     public static final Item PI_X = new ItemPi("pix", PIX);
     public static final Item PI = new ItemPi("pi", PI_1);
-    public static final Item MYJBHURTS = new ItemMyJBHurts(ItemMyJBHurts.myJBHurts, EntityEquipmentSlot.HEAD, "myjbhurts");
+    public static final Item JBMASK = new ItemJBMask(ItemJBMask.JBMASK, EntityEquipmentSlot.HEAD, "jbmask");
 
     @SubscribeEvent
     public static void handleItem(RegistryEvent.Register<Item> event) {
