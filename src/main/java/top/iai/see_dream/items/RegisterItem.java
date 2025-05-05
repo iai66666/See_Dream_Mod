@@ -31,6 +31,7 @@ public class RegisterItem {
     public static final Item PI_X = new ItemPi("pix", PIX);
     public static final Item PI = new ItemPi("pi", PI_1);
     public static final Item JBMASK = new ItemJBMask(ItemJBMask.JBMASK, EntityEquipmentSlot.HEAD, "jbmask");
+    public static final ItemBolg BOLG = new ItemBolg("bolg", Item.ToolMaterial.DIAMOND);
 
     @SubscribeEvent
     public static void handleItem(RegistryEvent.Register<Item> event) {
