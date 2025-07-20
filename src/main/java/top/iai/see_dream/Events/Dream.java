@@ -39,7 +39,7 @@ public class Dream {
     private static final List<Block> dirtBlocks = Arrays.asList(Blocks.DIRT, Blocks.GRASS, Blocks.GRASS_PATH, Blocks.FARMLAND);
     private static final List<Block> stonesBlocks = Arrays.asList(Blocks.STONE, Blocks.COAL_ORE, Blocks.IRON_ORE, Blocks.GOLD_ORE, Blocks.DIAMOND_ORE);
     private static final List<Block> plantsBlocks = Arrays.asList(Blocks.TALLGRASS, Blocks.DOUBLE_PLANT);
-    private static final List<Block> airBlocks = Arrays.asList(Blocks.WATER, Blocks.GRASS, Blocks.LAVA, Blocks.TNT);
+    private static final List<Block> airBlocks = Arrays.asList(Blocks.WATER, Blocks.LAVA);
     //表的表
     private static final List<List<Block>> blocksListsList = Arrays.asList(logsBlocks, leavesBlocks, dirtBlocks, stonesBlocks, plantsBlocks);
     //字典

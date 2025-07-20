@@ -11,4 +11,4 @@ tile.specter.name=§7§lSpecter's draw
 tile.bai_lu.name=§5§lbai_lu's draw
 tile.sl1me.name=§5§lSL1me's draw
 itemGroup.tap.See.Dream=§4§liai's sometings
-commands.dream.usage=§c§ld错误，正确语法格式为“/dream true[or false] <你需要保护的区域的坐标xyz与x'y'z'>”，只能由玩家使用
+see_dream.potion.first=Watch

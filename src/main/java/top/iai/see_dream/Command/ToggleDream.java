@@ -33,7 +33,7 @@ public class ToggleDream extends CommandBase {
             }
             String a = args[0];
             b = Boolean.parseBoolean(a);
-            if (args.length == 5) {
+            if (args.length == 7) {
                 int[] xyz = new int[6];
                 xyz[0] = Integer.parseInt(args[1]);
                 xyz[1] = Integer.parseInt(args[2]);
@@ -41,7 +41,6 @@ public class ToggleDream extends CommandBase {
                 xyz[3] = Integer.parseInt(args[4]);
                 xyz[4] = Integer.parseInt(args[5]);
                 xyz[5] = Integer.parseInt(args[6]);
-                toggleDream(xyz);
                 sender.sendMessage(new TextComponentString("dream值为"+" "+b+"变化区域为"+" "+xyz[0]+" "+xyz[1]+" "+xyz[2]+" "+xyz[3]+" "+xyz[4]+" "+xyz[5]));
             }
             else {

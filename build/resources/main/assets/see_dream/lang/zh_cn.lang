@@ -11,4 +11,4 @@ tile.specter.name=§7§l幽灵鲨挂画
 tile.bai_lu.name=§5§l白露挂画
 tile.sl1me.name=§d§lSL1me的挂画
 itemGroup.tap.See.Dream=§4§liai的奇妙小玩意
-commands.dream.usage=§c§ld错误，正确语法格式为“/dream true[or false] <你需要保护的区域的坐标xyz与x'y'z'>”，只能由玩家使用
+see_dream.potion.first=观察
