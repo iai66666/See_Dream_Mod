@@ -1,5 +1,6 @@
 package top.iai.see_dream.Events;
 
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -27,7 +28,7 @@ public class Dream {
     int randomX = 0;
     int randomY = 0;
     int randomZ = 0;
-    public static int[] xyz;
+    public static int[] xyz = new int[6];
     Vec3d playerGazeDirection = new Vec3d(0,0,0);
     public Dream() {
     }
@@ -69,28 +70,31 @@ public class Dream {
     }
 
     private void dreaming(){
+        /*
             waterTick++;
-            grassTick++;
-            if (waterTick >= 400) {
+            if (waterTick >= 450) {
                 waterTick = 0;
                 calculateDirection();
                 setRandom();
                 putBlocks();
-            }
-            if (grassTick >= 50) {
-                grassTick = 0;
-                calculateDirection();
-                growGrass();
-            }
+            }*/
+        grassTick++;
+        if (grassTick >= 100) {
+            grassTick = 0;
+            calculateDirection();
+            growGrass();
+        }
     }
     //草方块增生
     private void growGrass() {
         //玩家眼睛的位置
         Vec3d rayStartPoint = player.getPositionVector().add(0, player.getEyeHeight(), 0);
         //射线最大距离
-        double maxDistance = 128.0;
-        //射线方向向下偏移
-        Vec3d rayVec3d = new Vec3d(-playerGazeDirection.x, -playerGazeDirection.y - random.nextFloat() * 0.5, -playerGazeDirection.z);
+        double maxDistance = 2048f;
+        //射线随机偏移
+        Vec3d rayVec3d = new Vec3d(-playerGazeDirection.x, -playerGazeDirection.y - random.nextFloat() * 0.7, -playerGazeDirection.z);
+        //绕y轴旋转
+        rayVec3d = rotateAroundY(rayVec3d, 80);
 
         // 执行射线检测
         RayTraceResult result = worldServer.rayTraceBlocks(rayStartPoint, rayStartPoint.add(rayVec3d.x * maxDistance, rayVec3d.y * maxDistance, rayVec3d.z * maxDistance));
@@ -98,8 +102,10 @@ public class Dream {
         if (result != null && result.typeOfHit == RayTraceResult.Type.BLOCK) {
             // 获取碰撞到的方块位置
             BlockPos hitPos = result.getBlockPos();
+            //如果超出范围, 不执行
+            if (!isInRange(hitPos)) return;
             //如果碰到的方块距离较小，不执行
-            if (Math.sqrt(Math.pow(hitPos.getX() - player.posX, 2) + Math.pow(hitPos.getY() - player.posY + player.getEyeHeight(), 2) + Math.pow(hitPos.getZ() - player.posZ, 2)) < 5)
+            if (Math.sqrt(Math.pow(hitPos.getX() - player.posX, 2) + Math.pow(hitPos.getY() - player.posY + player.getEyeHeight(), 2) + Math.pow(hitPos.getZ() - player.posZ, 2)) < 4)
                 return;
             // 获取当前方块
             Block currentBlock = worldServer.getBlockState(hitPos).getBlock();
@@ -112,8 +118,14 @@ public class Dream {
                 // 如果有对应变化的方块，随机选择一个
                 if (possibleTransformations != null && !possibleTransformations.isEmpty()) {
                     //草方块增生
-                    if (currentBlock == Blocks.GRASS || possibleTransformations == plantsBlocks) {
-                        //随机坐标
+                    if (currentBlock == Blocks.GRASS || currentBlock == Blocks.DIRT || possibleTransformations == plantsBlocks) {
+                        //草方块消失
+                        if (currentBlock == Blocks.GRASS && random.nextDouble() < 0.3)
+                        {
+                            worldServer.setBlockState(hitPos, Blocks.AIR.getDefaultState());
+                            return;
+                        }
+                        //在其周围取随机坐标
                         BlockPos growPos = hitPos.add(new BlockPos(random.nextInt(5) - 1, random.nextInt(3) - 1, random.nextInt(5) - 1));
                         //如果超过玩家的头或不是方块，不执行
                         if (growPos.getY() - player.posY >= 2 || worldServer.getBlockState(growPos).getBlock() != Blocks.AIR) return;
@@ -138,7 +150,55 @@ public class Dream {
             }
         }
     }
-    //放水
+    // 绕y轴旋转
+    public Vec3d rotateAroundY(Vec3d vec, double angleDegrees) {
+        double randomAngleDegrees = angleDegrees * (random.nextDouble() * 2 - 1);
+        double angleRad = Math.toRadians(randomAngleDegrees);
+        double cos = Math.cos(angleRad);
+        double sin = Math.sin(angleRad);
+
+        double x = vec.x * cos + vec.z * sin;
+        double z = -vec.x * sin + vec.z * cos;
+
+        return new Vec3d(x, vec.y, z);
+    }
+    //判断是否在范围内
+    public boolean isInRange(BlockPos targetPos)
+    {
+        AxisAlignedBB box = new AxisAlignedBB(
+                player.posX + xyz[0], player.posY + xyz[1], player.posZ + xyz[2], // 最小点
+                player.posX + xyz[3], player.posY + xyz[4], player.posZ + xyz[5]  // 最大点
+        );
+        return box.contains(new Vec3d(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5)
+        );
+    }
+
+
+
+//下面代码都是废的
+    //计算玩家视线方向
+    public void calculateDirection(){
+        double var3 = Math.cos(-(player.rotationYaw % 360) * 0.017453292 - (float) Math.PI);
+        double var5 = Math.sin(-(player.rotationYaw % 360) * 0.017453292 - (float) Math.PI);
+        double var7 = -Math.cos(-player.rotationPitch * 0.017453292);
+        double var9 = Math.sin(-player.rotationPitch * 0.017453292);
+        playerGazeDirection = new Vec3d(var5 * var7, var9, var3 * var7);
+    }
+
+    //取随机数
+    public void setRandom(){
+        if((int) player.posX - rangeX < xyz[3] & (int) player.posX - rangeX < xyz[0]) {
+            randomX = (int) player.posX - rangeX + random.nextInt(2 * rangeX + 1);
+        }
+        if ((int) (player.posY + player.getEyeHeight()) - rangeY < xyz[4] & (int) (player.posY + player.getEyeHeight()) - rangeY < xyz[1]) {
+            randomY = (int) (player.posY + player.getEyeHeight()) - rangeY + random.nextInt(2 * rangeY + 1) + 16;
+        }
+        if ((int) player.posZ - rangeZ < xyz[5] & (int) player.posZ - rangeZ < xyz[2]){
+            randomZ = (int) player.posZ - rangeZ + random.nextInt(2 * rangeZ + 1);
+        }
+    }
+
+    //放方块
     private void putBlocks() {
         //在范围内取随机数
         BlockPos blockPos = new BlockPos(randomX, randomY, randomZ);
@@ -168,26 +228,6 @@ public class Dream {
         }
     }
 
-    //计算玩家视线方向
-    public void calculateDirection(){
-        double var3 = Math.cos(-(player.rotationYaw % 360) * 0.017453292 - (float) Math.PI);
-        double var5 = Math.sin(-(player.rotationYaw % 360) * 0.017453292 - (float) Math.PI);
-        double var7 = -Math.cos(-player.rotationPitch * 0.017453292);
-        double var9 = Math.sin(-player.rotationPitch * 0.017453292);
-        playerGazeDirection = new Vec3d(var5 * var7, var9, var3 * var7);
-    }
-    //取随机数
-    public void setRandom(){
-        if((int) player.posX - rangeX < xyz[3] & (int) player.posX - rangeX < xyz[0]) {
-            randomX = (int) player.posX - rangeX + random.nextInt(2 * rangeX + 1);
-        }
-        if ((int) (player.posY + player.getEyeHeight()) - rangeY < xyz[4] & (int) (player.posY + player.getEyeHeight()) - rangeY < xyz[1]) {
-            randomY = (int) (player.posY + player.getEyeHeight()) - rangeY + random.nextInt(2 * rangeY + 1) + 16;
-        }
-        if ((int) player.posZ - rangeZ < xyz[5] & (int) player.posZ - rangeZ < xyz[2]){
-            randomZ = (int) player.posZ - rangeZ + random.nextInt(2 * rangeZ + 1);
-        }
-    }
     //判断一个点是否在圆锥内
     //(Px, Py, Pz) 是要判断的点
     //(Vx, Vy, Vz) 是圆锥顶点

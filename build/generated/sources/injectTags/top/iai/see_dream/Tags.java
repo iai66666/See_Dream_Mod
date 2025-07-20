@@ -9,5 +9,5 @@ public class Tags {
     /** Auto-generated tag from RetroFuturaGradle */
     public static final String MOD_NAME = "??";
     /** Auto-generated tag from RetroFuturaGradle */
-    public static final String VERSION = "0.1.2b";
+    public static final String VERSION = "0.1.3b";
 }
